@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDPMS - Secure Identity Provider for IoT Devices</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>IDPMS</h1>
+            <p class="tagline">Secure Identity Provisioning for IoT Devices using ZKP and SRP</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>IDPMS (Identity Provider Microservice) is a custom-built identity solution specifically designed for the secure authentication of Internet of Things (IoT) devices. It leverages advanced cryptographic techniques, including Zero-Knowledge Proofs (ZKP) for establishing trust and the Secure Remote Password (SRP) protocol for robust user authentication.</p>
+            <img src="images/iot_security.png" alt="IoT Security Concept" class="hero-image">
+        </section>
+
+        <section id="registration-flow">
+            <h2>Registration Flow</h2>
+            <p>The initial registration process involves the IoT device connecting to its designated service provider. The service provider then interacts with IDPMS to securely obtain the necessary cryptographic parameters for the device.</p>
+            <h3>Registration Payload (Device to Service Provider):</h3>
+            <pre><code class="json-code">{
+  "username": "betaSolver",
+  "password": "05609@$"
+}</code></pre>
+            <h3>Registration Response (IDPMS to Service Provider):</h3>
+            <pre><code class="json-code">{
+  "prime": 90710673374687571127054984260803310258604480256845387359219855797581959143027628942598398180389316844748478280876631571447679273367502978356860255550042871052496102532058275338556806856269400004382695306559755227585599392380069656112472507758107114478439512373817419835394522531553703553659667747234981201329,
+  "generator": 42789213782489902570680947892587385235591673900881761172683713116783582396382,
+  "username": "betaSolver",
+  "x": 102987336249554097029535212322581322789799900648198034993379397001115665086549,
+  "b": 90968169002540936858125450291378794348902407441170233474694090436311211050832,
+  "k": 38239355687658843173208403353913388830417914324305085020722790343954604878361
+}</code></pre>
+            <p class="important">Crucially, once the service provider receives this response, it securely transmits the necessary parameters to the IoT device and immediately deletes the user's password from its system, minimizing the risk of credential compromise.</p>
+        </section>
+
+        <section id="authentication-flow">
+            <h2>Authentication Flow</h2>
+            <p>For subsequent service requests, the IoT device sends specific derived values to the service provider for authentication.</p>
+            <h3>Service Request Payload (Device to Service Provider):</h3>
+            <pre><code class="json-code">{
+  "username": "betaSolver",
+  "A": "68539476709196135407839402446948925554279823600737752128113590378778613682492023363099506460939801798521058505608187837340572400509766430169872314489373783033874288677604700081495544292165220138699927241021513883764139582766079045713540131054691919834684697439385284121886231328733704409749115594532086461590",
+  "client_key": "8832492192473414709029325613062244189831091511066954941752474382019913748871"
+}</code></pre>
+            <p>Based on these received values, the service provider communicates with IDPMS to verify the authenticity of the IoT device.</p>
+            <img src="images/authentication_flow.png" alt="Authentication Flow Diagram" class="flow-image">
+        </section>
+
+        <section id="security-features">
+            <h2>Key Security Features</h2>
+            <ul>
+                <li><strong>Zero-Knowledge Proof (ZKP):</strong> Enables the establishment of trust without revealing sensitive information.</li>
+                <li><strong>Secure Remote Password (SRP) Protocol:</strong> Provides strong password-based authentication resistant to common attacks.</li>
+                <li><strong>Device Key Deletion on Tampering:</strong> In the event of a mirroring attempt, the IoT device is programmed to self-destruct its key file, rendering the mirrored device unable to authenticate.</li>
+                <li><strong>Computational Security:</strong> Guessing the generated cryptographic keys is computationally infeasible.</li>
+            </ul>
+        </section>
+
+        <section id="key-rotation">
+            <h2>Key Rotation</h2>
+            <p>To further enhance security, IDPMS implements a key rotation mechanism. The cryptographic keys issued to devices have a defined expiry period. Upon expiration, devices are required to undergo the registration process again to obtain a new set of secure keys. This limits the window of opportunity for any potential key compromise.</p>
+            <img src="images/key_rotation.png" alt="Key Rotation Cycle" class="flow-image">
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 IDPMS. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
